@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/createCourse.css') }}"
+    />
+
+    <title>Home</title>
+  </head>
+  <body>
+    <div class="main-content">
+      <button id="openModal">Create course</button>
+
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close close-create">&times;</span>
+          <h2>Create course</h2>
+          <p>Some info..."</p>
+        </div>
+      </div>
+
+      <button id="openJoin">Join course</button>
+
+      <div id="modalJoin" class="modal">
+        <div class="modal-content">
+          <span class="close close-join">&times;</span>
+          <h2>Join course</h2>
+          <p>Some info..."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+
+      <a href="/">
+        <img src="{{ url_for('static', filename='images/house.png') }}" alt="Home" class="button-icon">
+        Main page
+      </a>
+
+      <a href="">
+        <img src="{{ url_for('static', filename='images/calendar.png') }}" alt="Calendar" class="button-icon">
+        Calendar
+      </a>
+
+      <a href="">
+        <img src="{{ url_for('static', filename='images/archive.png') }}" alt="Archive" class="button-icon">
+        Archive
+      </a>
+
+      <a href="">
+        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Settings" class="button-icon">
+        Settings
+      </a>
+    </div>
+
+    <!--? Scripts -->
+    <script src="{{ url_for('static', filename='js/createCourse.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/joinCourse.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/activeLink.js') }}"></script>
+  </body>
+</html>
