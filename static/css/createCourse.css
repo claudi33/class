@@ -223,3 +223,50 @@ input:checked + .slider:before {
   outline: none;
   
 }     
+
+.log-button{
+  display: flex; /* stack vertically */
+  color:var(--sidebar-text);
+  padding: 10px 20px;
+  position: fixed;
+  top: 1px;
+  right: 150px;
+
+  border-radius: 25px;
+  text-decoration: none;
+  margin: 20px 0;
+  transition: 0.3s ease;
+  font-family: Arial, sans-serif;
+  font-size: 16px;    /* size of letters */
+  font-weight: bold;  /* make letters thicker */
+  letter-spacing: 1px;
+  align-items: center;
+  gap: 8px;
+}
+
+.log-button:hover{
+  background-color: var(--button-active-bg);
+  color: var(--sidebar-text);
+}
+
+.log-button:active:hover{
+  background-color: var(--button-active-hover-bg);
+}
+
+#welcome-box{
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4CAF50;
+  padding: 15px 25px;
+  color: white;
+  border-radius: 8px;
+  font-size: 20px;
+  transition: top 0.6s ease;
+  z-index: 9999;
+}
+
+#welcome-box.show{
+  top: 20px;
+}
