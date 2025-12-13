@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from authlib.integrations.flask_client import OAuth
 from db import db, Course, User
-
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:gwerty@localhost:5432/courseApp'
@@ -10,10 +10,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.secret_key = "gwertygleb12"
 
+migrate = Migrate(app, db) #? migrations so that I can update rows in a database
+
 db.init_app(app)
 
-with app.app_context():
-    db.create_all()
+
 
 
 login_manager = LoginManager(app)
@@ -36,7 +37,10 @@ google = oauth.register(
 
 @app.route('/')
 def hello():
-    courses = Course.query.all()
+    if current_user.is_authenticated:
+        courses = Course.query.filter_by(user_id=current_user.id).all()
+    else:
+        courses = []
     return render_template('main_page.html', courses=courses, user=current_user)
 
 @app.route('/login')
@@ -56,6 +60,7 @@ def authorize():
         user = User(id=user_info['sub'],
                     name=user_info['name'],
                     email=user_info['email'])
+        
         db.session.add(user)
         db.session.commit()
     
@@ -70,19 +75,35 @@ def authorize():
 @login_required
 def logout():
     logout_user()
+    session['logged_out'] = True
     return redirect(url_for('hello'))
 
 @app.route('/save_course', methods=['POST'])
 @login_required
 def save_course():
+
+    if not current_user.is_authenticated:
+        return redirect('/')
+
     courseName = request.form.get('courseName')
     subjectName = request.form.get('subjectName')
 
     if courseName and subjectName:
-        new_course = Course(courseName=courseName, subjectName=subjectName)
+        new_course = Course(courseName=courseName, subjectName=subjectName, user_id=current_user.id)
         db.session.add(new_course)
         db.session.commit()
     return redirect(url_for('hello'))
+
+@app.route('/join_course')
+@login_required
+def join_course():
+    if not current_user.is_authenticated:
+        return redirect('/')
+    
+    courseId = request.form.get('courseId')
+
+    if courseId:
+        
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=5000)
