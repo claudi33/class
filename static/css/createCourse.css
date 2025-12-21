@@ -21,21 +21,25 @@ body{
 .modal {
   position: fixed;
   z-index: 5000;
-  left: 0;
-  top:0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+  inset: 0;
   background-color: var(--modal-overlay);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.modal.show{
-  opacity: 1; /* not crystal clear */
+.modal.show {
+  opacity: 1;
   visibility: visible;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
 }
 
 
@@ -43,11 +47,13 @@ body{
 .modal-content {
   background-color: var(--modal-bg);
   color: var(--text-color);
-  margin: 15% auto;
   padding: 20px;
   width: 35%;
-  height: 28%;
+  height: 33%;
   border-radius: 10px;
+
+  transform: translateY(-120px);
+  transition: transform 0.3s ease;
 }
 
 /* Close button */
@@ -57,12 +63,12 @@ body{
   cursor: pointer;
 }
 
-#openJoin {
+#openJoin { /*? Join button on the home page */
   background-color: blue;
   color: white;
   position: relative;
   left: 350px;
-  top: 350px;
+  top: 120px;
   border-radius: 25px;
   padding: 10px 20px;
   transition: 0.3s ease;
@@ -77,12 +83,12 @@ body{
   background-color: rgba(0, 123, 255, 0.886);
 }
 
-#openModal{
+#openModal{ /*? Create button on the home page */
   background-color: var(--button-bg);
   color: blue;
   position: relative;
   left: 300px;
-  top: 350px;
+  top: 120px;
   border: none;
   border-radius: 25px;
   padding: 10px 20px;
@@ -92,6 +98,7 @@ body{
   font-weight: bold;  /* make letters thicker */
   letter-spacing: 1px;
 }
+
 #openModal:hover{
   transform: scale(1.05);
   background-color: var(--button-hover-bg);
@@ -101,12 +108,14 @@ body{
   position: fixed; /* stays in place when scrolling */
   left: 0;
   top: 0;
-  width: 200px; 
+  width: 250px; 
   height: 100%;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
   letter-spacing: 1px;
   padding: 20px;
+  border-top-right-radius: 25px;
+  margin-top: -10px;
 }
 
 .sidebar a{
@@ -123,6 +132,24 @@ body{
   letter-spacing: 1px;
   align-items: center;
   gap: 8px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
+}
+
+.sidebar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -25px;
+  width: 25px;
+  height: 40px;
+  background-color: var(--sidebar-bg);
+  border-top-left-radius: 25px;
+}
+
+.sidebar::after{
+  content: "";
+  position: relative;
+  top: 50px;
 }
 
 .sidebar a.active{
@@ -134,13 +161,33 @@ body{
   background-color: var(--button-active-hover-bg);
 }
 
-.button-icon{
-  width: 24px;
-  height: 24px;
-}
 
 .sidebar a:hover{
   background-color: #dedede;
+}
+
+.sidebarLinks{
+  position: relative;
+  top: 80px;
+}
+
+.topbar{
+  position: fixed;
+  left: 250px;
+  top: 0;
+  width: calc(100% - 250px);
+  height: 70px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 20px;
+  border-top-left-radius: 25px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+
+.button-icon{
+  width: 24px;
+  height: 24px;
 }
 
 .main-content{
@@ -287,4 +334,117 @@ input:checked + .slider:before {
 
 #loggedOut-box.show{
   top: 20px;
+}
+
+.courses{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.course-card{
+  background-color: white;
+  border-radius: 12px;
+  position: relative;
+  top: 80px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 150px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+  font-family: "Arial", sans-serif;
+}
+
+.course-card:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.course-card h3{
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.course-card p{
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.submitButton{   /*? submit button for join and create course */
+  background-color: var(--button-bg);
+  color: blue;
+  border: none;
+  position: relative;
+  left: 330px;
+  border-radius: 25px;
+  padding: 10px 20px;
+  transition: 0.3s ease;
+  font-family: Arial, sans-serif;
+  font-size: 16px;    /* size of letters */
+  font-weight: bold;  /* make letters thicker */
+  letter-spacing: 1px;
+}
+
+.submitButton:hover{
+  transform: scale(1.05);
+  background-color: var(--button-hover-bg);
+}
+
+.submitButton.join{
+  left: 350px;
+}
+
+.mainPicture{
+  width: 250px;
+  height: 250px;
+  position: relative;
+  top: 150px;
+  left: 350px;
+}
+
+.no-courses-text {
+  margin-top: 15px;
+  font-size: 18px;
+  color: black;
+  font-weight: bold; /*? it'll look brighter */
+  text-align: center;
+  position: relative;
+  top: 120px;
+  right: 25px;
+}
+
+.task-list-container{
+  max-height: 200px; /*? height of scrollable area */
+  overflow-y: auto;
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: none; /*? initially hidden */
+  background-color: var(--modal-bg);
+}
+
+.task-list-container ul{
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.task-list-container li{
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.task-list-container li:last-child{
+  border-bottom: none;
+}
+
+.task-list-container.show{
+  display: block;
 }

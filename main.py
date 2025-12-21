@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from authlib.integrations.flask_client import OAuth
 from db import db, Course, User
 from flask_migrate import Migrate
+import secrets, string
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:gwerty@localhost:5432/courseApp'
@@ -35,10 +36,20 @@ google = oauth.register(
 
 
 
+def generate_course_id(length=10):  #? it creates a course id with this we can join other's courses
+    alphabet = string.ascii_lowercase + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def unique_course_id():
+    while True:
+        new_id = generate_course_id()
+        if not Course.query.filter_by(id=new_id).first():
+            return new_id
+
 @app.route('/')
 def hello():
     if current_user.is_authenticated:
-        courses = Course.query.filter_by(user_id=current_user.id).all()
+        courses = current_user.courses
     else:
         courses = []
     return render_template('main_page.html', courses=courses, user=current_user)
@@ -89,20 +100,37 @@ def save_course():
     subjectName = request.form.get('subjectName')
 
     if courseName and subjectName:
-        new_course = Course(courseName=courseName, subjectName=subjectName, user_id=current_user.id)
+        new_course = Course(
+            id=unique_course_id(),
+            courseName=courseName,
+            subjectName=subjectName,
+            owner_id=current_user.id
+        )
+        new_course.members.append(current_user)
         db.session.add(new_course)
         db.session.commit()
+        
     return redirect(url_for('hello'))
 
-@app.route('/join_course')
+@app.route('/join_course', methods=['POST'])
 @login_required
 def join_course():
-    if not current_user.is_authenticated:
-        return redirect('/')
-    
-    courseId = request.form.get('courseId')
+    course_id = request.form.get('courseId')
 
-    if courseId:
+    if not course_id:
+        return redirect(url_for('hello'))
+    
+    course = Course.query.get(course_id)
+
+    if not course:
+        return 'Course not found', 404
+    
+    if current_user in course.members:
+        return "Already joined", 400
+    
+    course.members.append(current_user)
+    db.session.commit()
+    return redirect(url_for('hello'))
         
 
 if __name__ == "__main__":

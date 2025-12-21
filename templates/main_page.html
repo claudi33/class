@@ -11,10 +11,20 @@
     <title>Home</title>
   </head>
   <body>
+    <div class="topbar">
+
+    </div>
+
     <div class="main-content">
+      
+      {% if user.is_authenticated and not courses %}
+        <div class="no-courses">
+          <img class="mainPicture" src="{{ url_for('static', filename='images/mainPicture.png') }}" alt="Main Picture">
+          <p class="no-courses-text">You have no courses yet</p>
+        </div>
+      {% endif %}
 
       {% if user.is_authenticated %}
-        
         <a class="log-button" href="{{ url_for('logout') }}">Logout</a>  
       {% else %}
         <a class="log-button" href="{{ url_for('login') }}">Login with Google</a>
@@ -46,11 +56,34 @@
 
       <div id="courses" class="courses">
         {% for course in courses %}
-        <div class="course-card">
+        <div class="course-card" data-id="{{ course.id }}"
+            data-subject="{{ course.subjectName }}"
+            data-course-name="{{ course.courseName }}">
           <h3>{{ course.courseName }}</h3>
           <p>{{ course.subjectName }}</p>
+          <p>ID: {{ course.id }}</p>
         </div>
         {% endfor %}
+      </div>
+
+      <div id="courseModal" class="modal">
+        <div class="modal-content">
+          <span class="close close-course">&times;</span>
+
+          <h2 id="modalCourseName"></h2>
+          <p id="modalSubject"></p>
+          <p><strong>Course ID:</strong> <span id="modalId"></span></p>
+
+          <button id="showTasksBtn">Tasks</button>  
+
+          <!-- Hidden task list -->
+          <div class="task-list-container" id="taskListContainer">
+            <ul id="taskList">
+
+            </ul>
+          </div>
+
+        </div>
       </div>
 
       <button id="openModal">Create course</button>
@@ -60,9 +93,9 @@
           <span class="close close-create">&times;</span>
           <h2>Create course</h2>
           <form action="{{ url_for('save_course') }}" method="POST" id="formCreate">
-            <input type="text" name="courseName" placeholder="Name of the course" id="createInput" required>
-            <input type="text" name="subjectName" placeholder="Subject" id="createInput" required>
-            <button type="submit">Create</button>
+            <input type="text" name="courseName" placeholder="Name of the course" required>
+            <input type="text" name="subjectName" placeholder="Subject" required>
+            <button type="submit" class="submitButton">Create</button>
           </form>
         </div>
       </div>
@@ -71,37 +104,45 @@
 
       <div id="modalJoin" class="modal">
         <div class="modal-content">
-          <form action="{{ url_for('join_course') }}" method="POST" id="formCreate">
-            <input type="text" name="courseId" placeholder="Course id" id="createInput" required>
-            <button type="submit">Join</button>
-          <span class="close close-join">&times;</span>
+           <span class="close close-join">&times;</span>
           <h2>Join course</h2>
           <p>Some info..."</p>
+          <form action="{{ url_for('join_course') }}" method="POST" id="formCreate">
+            <input type="text" name="courseId" placeholder="Course id" required>
+            <button type="submit" class="submitButton join">Join</button>
+          </form>
         </div>
       </div>
     </div>
 
     <div class="sidebar">
 
-      <a href="/">
-        <img src="{{ url_for('static', filename='images/house.png') }}" alt="Home" class="button-icon">
-        Main page
-      </a>
-
-      <a href="">
-        <img src="{{ url_for('static', filename='images/calendar.png') }}" alt="Calendar" class="button-icon">
-        Calendar
-      </a>
-
-      <a href="">
-        <img src="{{ url_for('static', filename='images/archive.png') }}" alt="Archive" class="button-icon">
-        Archive
-      </a>
-
-      <a href="">
-        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Settings" class="button-icon">
-        Settings
-      </a>
+      <div class="sidebarLinks">
+        <a href="/">
+          <img src="{{ url_for('static', filename='images/house.png') }}" alt="Home" class="button-icon">
+          Main page
+        </a>
+        <a href="/">
+          <img src="{{ url_for('static', filename='images/house.png') }}" alt="My courses" class="button-icon">
+          My courses
+        </a>
+        <a href="/">
+          <img src="{{ url_for('static', filename='images/house.png') }}" alt="Joined courses" class="button-icon">
+          Joined courses
+        </a>
+        <a href="">
+          <img src="{{ url_for('static', filename='images/calendar.png') }}" alt="Calendar" class="button-icon">
+          Calendar
+        </a>
+        <a href="">
+          <img src="{{ url_for('static', filename='images/archive.png') }}" alt="Archive" class="button-icon">
+          Archive
+        </a>
+        <a href="">
+          <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Settings" class="button-icon">
+          Settings
+        </a>
+      </div>
     </div>
 
     <!--? Scripts -->
@@ -111,5 +152,7 @@
     <script src="{{ url_for('static', filename='js/lightDarkMode.js') }}"></script>
     <script src="{{ url_for('static', filename='js/welcomeBox.js') }}"></script>
     <script src="{{ url_for('static', filename='js/loggedOutBox.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/courseCard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/showTasks.js') }}"></script>
   </body>
 </html>
